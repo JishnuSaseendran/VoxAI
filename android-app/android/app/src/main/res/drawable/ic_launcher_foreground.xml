@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- V shape for VoxAI -->
+    <path
+        android:pathData="M34,32 L54,72 L74,32 L68,32 L54,62 L40,32 Z"
+        android:fillColor="#FFFFFF"/>
+
+    <!-- Sound wave 1 (inner) -->
+    <path
+        android:pathData="M76,44 Q82,54 76,64"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+
+    <!-- Sound wave 2 (outer) -->
+    <path
+        android:pathData="M82,38 Q92,54 82,70"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"/>
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,76m-3,0a3,3 0 1,0 6,0a3,3 0 1,0 -6,0"/>
+</vector>
