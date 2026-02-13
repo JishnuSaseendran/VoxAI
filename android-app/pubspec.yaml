@@ -1,0 +1,57 @@
+name: voxai
+description: VoxAI - Multi-Agent AI Voice Assistant
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.1
+
+  # HTTP Client
+  http: ^1.1.2
+
+  # Local Storage
+  shared_preferences: ^2.2.2
+
+  # Audio Recording
+  flutter_sound: ^9.16.3
+
+  # Audio Playback
+  audioplayers: ^6.1.0
+
+  # For flutter_sound
+  flutter_sound_platform_interface: ^9.16.3
+
+  # Path utilities
+  path_provider: ^2.1.5
+  path: ^1.9.0
+
+  # Permissions
+  permission_handler: ^11.3.1
+
+  # Icons
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#667EEA"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
+
+flutter:
+  uses-material-design: true
