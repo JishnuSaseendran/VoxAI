@@ -1,6 +1,6 @@
-# Voice Assistant Backend
+# VoxAI Backend
 
-A FastAPI-powered multi-agent AI system that handles voice and text queries using specialized agents.
+A FastAPI-powered multi-agent AI system that handles voice and text queries using specialized LangGraph agents, with JWT authentication and session-based chat history.
 
 ## Architecture
 
@@ -8,13 +8,17 @@ A FastAPI-powered multi-agent AI system that handles voice and text queries usin
 backend/
 ├── app/
 │   ├── agents/
-│   │   ├── state.py      # Agent state definition
-│   │   ├── nodes.py      # Individual agent implementations
-│   │   └── graph.py      # LangGraph orchestration
+│   │   ├── state.py      # AgentState TypedDict definition
+│   │   ├── nodes.py      # Router + 8 specialist agent implementations
+│   │   └── graph.py      # LangGraph StateGraph orchestration
 │   ├── services/
-│   │   ├── llm.py        # Multi-agent interface
-│   │   └── speech.py     # Speech-to-text & text-to-speech
-│   └── main.py           # FastAPI endpoints
+│   │   ├── auth.py       # JWT auth (create/verify tokens, password hashing)
+│   │   ├── chat.py       # Session & message CRUD operations
+│   │   ├── llm.py        # OpenAI GPT-4o-mini interface + session title generation
+│   │   └── speech.py     # Google STT (SpeechRecognition) + gTTS
+│   ├── database.py       # SQLAlchemy engine & session setup
+│   ├── models.py         # User, ChatSession, ChatMessage ORM models
+│   └── main.py           # FastAPI app & all API endpoints
 ├── requirements.txt
 ├── run.py
 └── .env
@@ -22,7 +26,7 @@ backend/
 
 ## Multi-Agent System
 
-The system uses LangGraph to orchestrate specialized agents:
+The system uses LangGraph to orchestrate specialized agents powered by OpenAI GPT-4o-mini:
 
 | Agent | Purpose | Use Case |
 |-------|---------|----------|
@@ -35,6 +39,8 @@ The system uses LangGraph to orchestrate specialized agents:
 | **Creative** | Content creation | "Write a poem about the ocean" |
 | **Math** | Calculations | "Solve: 2x + 5 = 15" |
 | **Conversation** | Casual chat | "Hello, how are you?" |
+
+The flow is: **User Query -> Router Agent -> Specialist Agent -> Response Enhancer -> Final Response**
 
 ## Setup
 
@@ -188,7 +194,7 @@ Content-Type: multipart/form-data
 
 audio: <audio file>
 ```
-Supports: webm, mp3, wav, ogg, m4a, flac, etc.
+Supports: webm, mp3, wav, ogg, m4a, flac, mp4, aiff, aac, wma, opus.
 
 ### Voice Query (Detailed)
 ```
@@ -207,7 +213,7 @@ Content-Type: application/json
   "question": "Text to convert to speech"
 }
 ```
-Returns MP3 audio file.
+Returns MP3 audio file via gTTS.
 
 ### List Agents
 ```
@@ -262,18 +268,25 @@ FastAPI auto-generates documentation:
 ### Adding New Agents
 
 1. Add agent function in `app/agents/nodes.py`
-2. Register in `app/agents/graph.py`
-3. Update router classification in `router_agent()`
+2. Register in `app/agents/graph.py` (add node + routing map entry)
+3. Update router classification prompt in `router_agent()`
 
-## Requirements
+## Key Dependencies
 
-- Python 3.9+
-- FFmpeg
-- OpenAI API key
+| Package | Purpose |
+|---------|---------|
+| `fastapi` + `uvicorn` | Web framework & ASGI server |
+| `langgraph` | Multi-agent orchestration |
+| `openai` | GPT-4o-mini LLM calls |
+| `SpeechRecognition` | Google Speech-to-Text |
+| `gTTS` | Google Text-to-Speech |
+| `pydub` | Audio format conversion (requires FFmpeg) |
+| `sqlalchemy` | ORM & database management |
+| `python-jose` + `passlib` | JWT tokens & password hashing |
 
 ## Database
 
-The application uses SQLite by default. The database file `voice_assistant.db` is created automatically in the backend directory on first run.
+SQLite database (`voice_assistant.db`) is created automatically on first run. Tables: `users`, `chat_sessions`, `chat_messages`.
 
 To use a different database, set the `DATABASE_URL` environment variable:
 ```env

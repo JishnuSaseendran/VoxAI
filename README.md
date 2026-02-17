@@ -1,57 +1,58 @@
-# Voice Assistant
+# VoxAI - Multi-Agent AI Voice Assistant
 
-A full-stack multi-agent AI assistant that handles voice and text queries using specialized AI agents.
+A full-stack multi-agent AI assistant that handles voice and text queries using specialized AI agents, with a Flutter mobile app, Svelte web frontend, and Python backend.
 
 ## Overview
 
-Voice Assistant is an intelligent system that routes your questions to specialized AI agents based on the query type. Whether you need help with coding, math, grammar, research, or just want to chat, the system automatically selects the best agent for your needs.
+VoxAI is an intelligent system that routes your questions to specialized AI agents based on the query type. Whether you need help with coding, math, grammar, research, or just want to chat, the system automatically selects the best agent for your needs.
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend Options                          │
-│  ┌─────────────────────┐       ┌─────────────────────────────┐  │
-│  │   Vanilla JS        │       │        Svelte               │  │
-│  │   (Zero deps)       │       │    (Rich UX + Live Status)  │  │
-│  └──────────┬──────────┘       └──────────────┬──────────────┘  │
-│             │                                  │                  │
-└─────────────┼──────────────────────────────────┼─────────────────┘
-              │          REST API                │
-              └──────────────┬───────────────────┘
-                             │
-┌────────────────────────────┼────────────────────────────────────┐
-│                        Backend                                   │
-│  ┌─────────────────────────┴─────────────────────────────────┐  │
-│  │                     FastAPI Server                         │  │
-│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐    │  │
-│  │  │   Speech    │  │   Router    │  │   Text-to-Speech│    │  │
-│  │  │   Service   │  │   Agent     │  │   Service       │    │  │
-│  │  └─────────────┘  └──────┬──────┘  └─────────────────┘    │  │
-│  │                          │                                 │  │
-│  │  ┌───────────────────────┴───────────────────────────┐    │  │
-│  │  │              LangGraph Multi-Agent System          │    │  │
-│  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐  │    │  │
-│  │  │  │ General │ │ Coding  │ │ Grammar │ │Research │  │    │  │
-│  │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘  │    │  │
-│  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐  │    │  │
-│  │  │  │ Planner │ │Creative │ │  Math   │ │  Chat   │  │    │  │
-│  │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘  │    │  │
-│  │  └───────────────────────────────────────────────────┘    │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                        Client Applications                        │
+│  ┌─────────────────────────┐    ┌────────────────────────────┐   │
+│  │   Flutter Mobile App    │    │     Svelte Web Frontend    │   │
+│  │   (Android / Cross)     │    │   (Rich UX + Live Status)  │   │
+│  └───────────┬─────────────┘    └─────────────┬──────────────┘   │
+│              │                                 │                   │
+└──────────────┼─────────────────────────────────┼──────────────────┘
+               │            REST API             │
+               └────────────────┬────────────────┘
+                                │
+┌───────────────────────────────┼───────────────────────────────────┐
+│                           Backend                                  │
+│  ┌────────────────────────────┴──────────────────────────────┐    │
+│  │                      FastAPI Server                        │    │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐   │    │
+│  │  │   Google STT  │  │   Router     │  │   gTTS (TTS)   │   │    │
+│  │  │   + pydub     │  │   Agent      │  │                │   │    │
+│  │  └──────────────┘  └──────┬───────┘  └────────────────┘   │    │
+│  │                           │                                │    │
+│  │  ┌────────────────────────┴────────────────────────────┐   │    │
+│  │  │             LangGraph Multi-Agent System             │   │    │
+│  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌──────────┐  │   │    │
+│  │  │  │ General │ │ Coding  │ │ Grammar │ │ Research │  │   │    │
+│  │  │  └─────────┘ └─────────┘ └─────────┘ └──────────┘  │   │    │
+│  │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌──────────┐  │   │    │
+│  │  │  │ Planner │ │Creative │ │  Math   │ │  Chat    │  │   │    │
+│  │  │  └─────────┘ └─────────┘ └─────────┘ └──────────┘  │   │    │
+│  │  └─────────────────────────────────────────────────────┘   │    │
+│  └────────────────────────────────────────────────────────────┘    │
+└────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Features
 
-- **Multi-Agent AI** - Specialized agents for different query types
+- **Multi-Agent AI** - 8 specialized agents for different query types (powered by OpenAI GPT-4o-mini)
 - **Voice Input** - Speak your questions using the microphone
 - **Text Input** - Type questions directly
-- **Text-to-Speech** - Listen to AI responses with playback controls
+- **Text-to-Speech** - Listen to AI responses via gTTS with playback controls
 - **Auto-Routing** - Automatically selects the best agent for your query
-- **User Authentication** - Sign up and login to save your conversations
+- **User Authentication** - JWT-based signup/login to save conversations
 - **Chat History** - Session-based chat history with sidebar navigation
-- **Two Frontend Options** - Choose between lightweight vanilla JS or feature-rich Svelte
+- **Mobile App** - Flutter-based Android app with full feature parity
+- **Web Frontend** - Svelte app with real-time status updates and responsive design
 
 ## Specialized Agents
 
@@ -72,7 +73,8 @@ Voice Assistant is an intelligent system that routes your questions to specializ
 
 - Python 3.9+
 - Node.js 18+ (for Svelte frontend)
-- FFmpeg
+- Flutter SDK 3.0+ (for mobile app)
+- FFmpeg (for audio processing)
 - OpenAI API key
 
 ### 1. Backend Setup
@@ -90,9 +92,7 @@ python run.py
 
 Backend runs at `http://localhost:8000`
 
-### 2. Frontend Setup
-
-**Option A: Svelte (Recommended for rich UX)**
+### 2. Web Frontend Setup
 
 ```bash
 cd frontend-svelte
@@ -100,14 +100,17 @@ npm install
 npm run dev
 ```
 
-**Option B: Vanilla JS (Zero dependencies)**
+Frontend runs at `http://localhost:3000`
+
+### 3. Mobile App Setup
 
 ```bash
-cd frontend
-python -m http.server 3000
+cd android-app
+flutter pub get
+flutter run
 ```
 
-Frontend runs at `http://localhost:3000`
+See [Android App README](android-app/README.md) for API URL configuration.
 
 ## Project Structure
 
@@ -115,26 +118,41 @@ Frontend runs at `http://localhost:3000`
 Voice-Assistant/
 ├── backend/                 # FastAPI + LangGraph backend
 │   ├── app/
-│   │   ├── agents/          # Multi-agent system
-│   │   ├── services/        # Speech & LLM services
-│   │   └── main.py          # API endpoints
+│   │   ├── agents/          # Multi-agent system (router, 8 specialists)
+│   │   │   ├── state.py     # Agent state definition
+│   │   │   ├── nodes.py     # Agent implementations
+│   │   │   └── graph.py     # LangGraph orchestration
+│   │   ├── services/        # Auth, chat, LLM, speech services
+│   │   │   ├── auth.py      # JWT authentication
+│   │   │   ├── chat.py      # Session & message management
+│   │   │   ├── llm.py       # OpenAI LLM interface
+│   │   │   └── speech.py    # Google STT + gTTS
+│   │   ├── database.py      # SQLAlchemy database setup
+│   │   ├── models.py        # User, Session, Message models
+│   │   └── main.py          # FastAPI endpoints
 │   ├── requirements.txt
 │   └── README.md
 │
-├── frontend-svelte/         # Modern Svelte frontend
+├── frontend-svelte/         # Svelte web frontend
 │   ├── src/
 │   │   ├── lib/
-│   │   │   ├── components/  # UI components
-│   │   │   ├── stores/      # State management
-│   │   │   └── services/    # API services
+│   │   │   ├── components/  # UI components (8 components)
+│   │   │   ├── stores/      # Svelte stores (assistant, auth, chat, config)
+│   │   │   └── services/    # API service layer
 │   │   └── App.svelte
 │   └── README.md
 │
-└── frontend/                # Vanilla JS frontend
-    ├── index.html
-    ├── css/style.css
-    ├── js/app.js
-    └── README.md
+├── android-app/             # Flutter mobile app
+│   ├── lib/
+│   │   ├── models/          # Data models (user, session, message)
+│   │   ├── providers/       # State management (auth, chat)
+│   │   ├── services/        # API client
+│   │   ├── screens/         # Splash, login, home screens
+│   │   └── widgets/         # Chat drawer, message bubble, status
+│   ├── pubspec.yaml
+│   └── README.md
+│
+└── README.md
 ```
 
 ## API Endpoints
@@ -161,22 +179,23 @@ Voice-Assistant/
 
 - [Backend Documentation](backend/README.md) - API details, agent system, setup
 - [Svelte Frontend Documentation](frontend-svelte/README.md) - Components, state management
-- [Vanilla JS Frontend Documentation](frontend/README.md) - Simple setup, customization
+- [Android App Documentation](android-app/README.md) - Mobile setup, features
 
 ## Technology Stack
 
-**Backend**
-- FastAPI - Web framework
-- LangGraph - Multi-agent orchestration
-- OpenAI - GPT models & Whisper STT
-- FFmpeg - Audio processing
-
-**Frontend (Svelte)**
-- Svelte - Reactive framework
-- Vite - Build tool
-
-**Frontend (Vanilla)**
-- HTML/CSS/JavaScript - No dependencies
+| Layer | Technology |
+|-------|-----------|
+| **LLM** | OpenAI GPT-4o-mini |
+| **Agent Orchestration** | LangGraph |
+| **Backend Framework** | FastAPI |
+| **Speech-to-Text** | Google Speech Recognition (via SpeechRecognition) |
+| **Text-to-Speech** | gTTS (Google Text-to-Speech) |
+| **Audio Processing** | pydub + FFmpeg |
+| **Database** | SQLite (via SQLAlchemy) |
+| **Authentication** | JWT (python-jose + passlib/bcrypt) |
+| **Web Frontend** | Svelte 4 + Vite 5 |
+| **Mobile App** | Flutter 3 (Dart) |
+| **State Management** | Svelte stores (web), Provider (mobile) |
 
 ## License
 
